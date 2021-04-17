@@ -24,7 +24,7 @@ jobs:
           echo "::set-output name=TAG_NAME::${TAG_NAME}"
           echo "::set-output name=RELEASE_NAME::${RELEASE_NAME}"
           echo "::set-output name=BODY::${BODY}"
-          echo "::set-output name=APK_PATH::${FILE_NAME}"
+          echo "::set-output name=FILE_NAME::${FILE_NAME}"
           echo "::set-output name=APK_PATH::${APK_PATH}"
           curl -Lo "$APK_PATH" $(echo $JSON | jq -r '.assets[1].browser_download_url')
           
