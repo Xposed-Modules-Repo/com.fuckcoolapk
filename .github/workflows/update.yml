@@ -12,8 +12,6 @@ jobs:
     steps:
       - name: Get Apk And Info
         id: get_app
-        outputs:
-          some
         run: |
           set -x
           mkdir dist
