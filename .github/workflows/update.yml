@@ -7,11 +7,12 @@ on:
 
 jobs:
   update:
-    name: Gradle CI Build
+    name: Update Apk
     runs-on: ubuntu-latest
     steps:
       - name: Get Apk And Info
         run: |
+          set -x
           export JSON=$(curl -L 'https://api.github.com/repos/ejiaogl/FuckCoolapk/releases/latest')
           export TAG_NAME=$(echo $JSON | jq -r '.tag_name')
           export RELEASE_NAME=$(echo $JSON | jq -r '.name')
