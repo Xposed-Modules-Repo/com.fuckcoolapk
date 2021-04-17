@@ -13,6 +13,7 @@ jobs:
       - name: Get Apk And Info
         run: |
           set -x
+          mkdir dist
           export JSON=$(curl -L 'https://api.github.com/repos/ejiaogl/FuckCoolapk/releases/latest')
           export TAG_NAME=$(echo $JSON | jq -r '.tag_name')
           export RELEASE_NAME=$(echo $JSON | jq -r '.name')
