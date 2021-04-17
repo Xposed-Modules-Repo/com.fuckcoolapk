@@ -11,9 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get Apk And Info
+        id: get_app
+        outputs:
+          some
         run: |
           set -x
           mkdir dist
+          echo "::set-output name=some_output::233"
           export JSON=$(curl -L 'https://api.github.com/repos/ejiaogl/FuckCoolapk/releases/latest')
           export TAG_NAME=$(echo $JSON | jq -r '.tag_name')
           export RELEASE_NAME=$(echo $JSON | jq -r '.name')
@@ -28,7 +32,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${TAG_NAME}
+          tag_name: ${{steps.get_app.some_output}}
           release_name: ${APK_PATH}
           body: ${BODY}
           draft: false
