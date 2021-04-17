@@ -17,7 +17,7 @@ jobs:
           export JSON=$(curl -L 'https://api.github.com/repos/ejiaogl/FuckCoolapk/releases/latest')
           export TAG_NAME=$(echo $JSON | jq -r '.tag_name')
           export RELEASE_NAME=$(echo $JSON | jq -r '.name')
-          echo -e $(echo $JSON | jq .body | tr  '[:cntrl:]' '\n') > dist/1.md
+          echo -e $(echo $JSON | jq -r .body | tr  '[:cntrl:]' '\n') > dist/1.md
           cat dist/1.md
           export FILE_NAME=$(echo $JSON | jq -r '.assets[1].name')
           export APK_PATH="dist/${FILE_NAME}"
