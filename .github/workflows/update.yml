@@ -36,7 +36,7 @@ jobs:
         with:
           tag_name: ${{steps.app.outputs.TAG_NAME}}
           release_name: ${{steps.app.outputs.RELEASE_NAME}}
-          body: dist/1.md
+          body: ${{ dist/1.md }}
           draft: false
           prerelease: false
           
