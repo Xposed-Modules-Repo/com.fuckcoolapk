@@ -13,12 +13,12 @@ jobs:
       - name: Get Apk And Info
         id: app
         run: |
-          set -x
           mkdir dist
           export JSON=$(curl -L 'https://api.github.com/repos/ejiaogl/FuckCoolapk/releases/latest')
           export TAG_NAME=$(echo $JSON | jq -r '.tag_name')
           export RELEASE_NAME=$(echo $JSON | jq -r '.name')
-          export BODY=$(echo $JSON | jq -r .body | tr  '[:cntrl:]' '\n')
+          echo -e $(echo $JSON | jq .body | tr  '[:cntrl:]' '\n' | sed -e 's/"//g') > dist/1.md
+          cat dist/1.md
           export FILE_NAME=$(echo $JSON | jq -r '.assets[1].name')
           export APK_PATH="dist/${FILE_NAME}"
           echo "::set-output name=TAG_NAME::${TAG_NAME}"
@@ -36,7 +36,7 @@ jobs:
         with:
           tag_name: ${{steps.app.outputs.TAG_NAME}}
           release_name: ${{steps.app.outputs.RELEASE_NAME}}
-          body: ${{steps.app.outputs.BODY}}
+          body_path: dist/1.md
           draft: false
           prerelease: false
           
