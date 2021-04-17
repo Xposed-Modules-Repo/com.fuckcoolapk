@@ -18,7 +18,7 @@ jobs:
           export JSON=$(curl -L 'https://api.github.com/repos/ejiaogl/FuckCoolapk/releases/latest')
           export TAG_NAME=$(echo $JSON | jq -r '.tag_name')
           export RELEASE_NAME=$(echo $JSON | jq -r '.name')
-          export BODY=$(echo -e $(echo $JSON | jq .body | sed -e 's/\\r//g' -e 's/\\n/<br>/g'  -e 's/"//g'))
+          export BODY=$(echo $JSON | jq -r .body | tr  '[:cntrl:]' '\n')
           export FILE_NAME=$(echo $JSON | jq -r '.assets[1].name')
           export APK_PATH="dist/${FILE_NAME}"
           echo "::set-output name=TAG_NAME::${TAG_NAME}"
