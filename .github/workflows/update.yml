@@ -18,7 +18,7 @@ jobs:
           export TAG_NAME=$(echo $JSON | jq -r '.tag_name')
           export RELEASE_NAME=$(echo $JSON | jq -r '.name')
           echo $(echo $JSON | jq .body | tr  '[:cntrl:]' '\n') > dist/1.md
-          cat 1.md
+          cat dist/1.md
           export FILE_NAME=$(echo $JSON | jq -r '.assets[1].name')
           export APK_PATH="dist/${FILE_NAME}"
           echo "::set-output name=TAG_NAME::${TAG_NAME}"
