@@ -11,17 +11,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get Apk And Info
-        id: get_app
+        id: app
         run: |
           set -x
           mkdir dist
-          echo "::set-output name=some_output::233"
           export JSON=$(curl -L 'https://api.github.com/repos/ejiaogl/FuckCoolapk/releases/latest')
           export TAG_NAME=$(echo $JSON | jq -r '.tag_name')
           export RELEASE_NAME=$(echo $JSON | jq -r '.name')
-          export BODY=$(echo $JSON | jq -r '.body')
+          export BODY=$(echo $JSON | jq -r .body | tr  '[:cntrl:]' '\n')
           export FILE_NAME=$(echo $JSON | jq -r '.assets[1].name')
           export APK_PATH="dist/${FILE_NAME}"
+          echo "::set-output name=TAG_NAME::${TAG_NAME}"
+          echo "::set-output name=RELEASE_NAME::${RELEASE_NAME}"
+          echo "::set-output name=BODY::${BODY}"
+          echo "::set-output name=FILE_NAME::${FILE_NAME}"
+          echo "::set-output name=APK_PATH::${APK_PATH}"
           curl -Lo "$APK_PATH" $(echo $JSON | jq -r '.assets[1].browser_download_url')
           
       - name: Github Release
@@ -30,9 +34,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{steps.get_app.some_output}}
-          release_name: ${APK_PATH}
-          body: ${BODY}
+          tag_name: ${{steps.app.outputs.TAG_NAME}}
+          release_name: ${{steps.app.outputs.RELEASE_NAME}}
+          body: ${{steps.app.outputs.BODY}}
           draft: false
           prerelease: false
           
@@ -43,6 +47,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ${APK_PATH}
-          asset_name: ${FILE_NAME}
+          asset_path: ${{steps.app.outputs.APK_PATH}}
+          asset_name: ${{steps.app.outputs.FILE_NAME}}
           asset_content_type: application/zip
