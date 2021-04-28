@@ -20,7 +20,7 @@ jobs:
           export TAG_NAME=$(echo $JSON | jq -r '.tag_name')
           export TAG_NAME2=$(echo $JSON | jq -r '.tag_name')
           if [ "$TAG_NAME" == "$TAG_NAME2" ]; then
-            curl -H "Authorization: token {{ secrets.GITHUB_TOKEN }}" -X POST "https://api.github.com/repos/Xposed-Modules-Repo/com.fuckcoolapk/actions/runs/${{ github.run_id }}/cancel"
+            curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -X POST "https://api.github.com/repos/Xposed-Modules-Repo/com.fuckcoolapk/actions/runs/${{ github.run_id }}/cancel"
           fi
           export RELEASE_NAME=$(echo $JSON | jq -r '.name')
           echo -e $(echo $JSON | jq .body | tr  '[:cntrl:]' '\n' | sed -e 's/"//g') > dist/1.md
