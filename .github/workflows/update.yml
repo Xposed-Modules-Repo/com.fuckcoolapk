@@ -19,7 +19,7 @@ jobs:
           export JSON2=$(curl -L 'https://api.github.com/repos/Xposed-Modules-Repo/com.fuckcoolapk/releases/latest')
           export TAG_NAME=$(echo $JSON | jq -r '.tag_name')
           export TAG_NAME2=$(echo $JSON | jq -r '.tag_name')
-          if [ "$TAG_NAME" = "TAG_NAME2"]; then
+          if [ "$TAG_NAME" == "TAG_NAME2" ]; then
           curl \
           -H "Authorization: token {{ secrets.ACTION_TOKEN }}" \
           -X POST "https://api.github.com/repos/Xposed-Modules-Repo/com.fuckcoolapk/actions/runs/{{ github.run_id }}/cancel";
