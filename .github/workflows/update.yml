@@ -20,21 +20,25 @@ jobs:
           export TAG_NAME=$(echo $JSON | jq -r '.tag_name')
           export TAG_NAME2=$(echo $JSON | jq -r '.tag_name')
           if [ "$TAG_NAME" == "$TAG_NAME2" ]; then
-            curl -H "Authorization: token ${{ secrets.ACTION_TOKEN }}" -X POST "https://api.github.com/repos/Xposed-Modules-Repo/com.fuckcoolapk/actions/runs/${{ github.run_id }}/cancel"
+            echo "::set-output name=UPDATED::TRUE"
+            curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -X POST "https://api.github.com/repos/Xposed-Modules-Repo/com.fuckcoolapk/actions/runs/${{ github.run_id }}/cancel"
+          else
+            echo "::set-output name=UPDATED::FALSE"
+            export RELEASE_NAME=$(echo $JSON | jq -r '.name')
+            echo -e $(echo $JSON | jq .body | tr  '[:cntrl:]' '\n' | sed -e 's/"//g') > dist/1.md
+            cat dist/1.md
+            export FILE_NAME=$(echo $JSON | jq -r '.assets[1].name')
+            export APK_PATH="dist/${FILE_NAME}"
+            echo "::set-output name=TAG_NAME::${TAG_NAME}"
+            echo "::set-output name=RELEASE_NAME::${RELEASE_NAME}"
+            echo "::set-output name=BODY::${BODY}"
+            echo "::set-output name=FILE_NAME::${FILE_NAME}"
+            echo "::set-output name=APK_PATH::${APK_PATH}"
+            curl -Lo "$APK_PATH" $(echo $JSON | jq -r '.assets[1].browser_download_url')
           fi
-          export RELEASE_NAME=$(echo $JSON | jq -r '.name')
-          echo -e $(echo $JSON | jq .body | tr  '[:cntrl:]' '\n' | sed -e 's/"//g') > dist/1.md
-          cat dist/1.md
-          export FILE_NAME=$(echo $JSON | jq -r '.assets[1].name')
-          export APK_PATH="dist/${FILE_NAME}"
-          echo "::set-output name=TAG_NAME::${TAG_NAME}"
-          echo "::set-output name=RELEASE_NAME::${RELEASE_NAME}"
-          echo "::set-output name=BODY::${BODY}"
-          echo "::set-output name=FILE_NAME::${FILE_NAME}"
-          echo "::set-output name=APK_PATH::${APK_PATH}"
-          curl -Lo "$APK_PATH" $(echo $JSON | jq -r '.assets[1].browser_download_url')
           
       - name: Github Release
+        if: ${{steps.app.outputs.UPDATED}} == 'FALSE'
         uses: actions/create-release@v1
         id: create_release
         env:
@@ -47,6 +51,7 @@ jobs:
           prerelease: false
           
       - name: Upload Release Asset
+        if: ${{steps.app.outputs.UPDATED}} == 'FALSE'
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
