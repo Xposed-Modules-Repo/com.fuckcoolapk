@@ -1,9 +1,10 @@
 name: Update Apk
 
-on:
-  workflow_dispatch:
-  schedule:
-  - cron: "30 1 * * *"
+on: workflow_dispatch
+#on:
+#  workflow_dispatch:
+#  schedule:
+#  - cron: "30 1 * * *"
 
 jobs:
   update:
@@ -15,7 +16,14 @@ jobs:
         run: |
           mkdir dist
           export JSON=$(curl -L 'https://api.github.com/repos/ejiaogl/FuckCoolapk/releases/latest')
+          export JSON2=$(curl -L 'https://api.github.com/repos/Xposed-Modules-Repo/com.fuckcoolapk/releases/latest')
           export TAG_NAME=$(echo $JSON | jq -r '.tag_name')
+          export TAG_NAME2=$(echo $JSON | jq -r '.tag_name')
+          if [ "$TAG_NAME" = "TAG_NAME2"]; then
+          curl \
+          -H "Authorization: token {{ secrets.ACTION_TOKEN }}" \
+          -X POST "https://api.github.com/repos/Xposed-Modules-Repo/com.fuckcoolapk/actions/runs/{{ github.run_id }}/cancel";
+          fi
           export RELEASE_NAME=$(echo $JSON | jq -r '.name')
           echo -e $(echo $JSON | jq .body | tr  '[:cntrl:]' '\n' | sed -e 's/"//g') > dist/1.md
           cat dist/1.md
