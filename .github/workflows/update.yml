@@ -18,7 +18,7 @@ jobs:
           export JSON=$(curl -L 'https://api.github.com/repos/ejiaogl/FuckCoolapk/releases/latest')
           export JSON2=$(curl -L 'https://api.github.com/repos/Xposed-Modules-Repo/com.fuckcoolapk/releases/latest')
           export TAG_NAME=$(echo $JSON | jq -r '.tag_name')
-          export TAG_NAME2=$(echo $JSON | jq -r '.tag_name')
+          export TAG_NAME2=$(echo $JSON2 | jq -r '.tag_name')
           if [ "$TAG_NAME" == "$TAG_NAME2" ]; then
             echo "::set-output name=UPDATED::TRUE"
             curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -X POST "https://api.github.com/repos/Xposed-Modules-Repo/com.fuckcoolapk/actions/runs/${{ github.run_id }}/cancel"
