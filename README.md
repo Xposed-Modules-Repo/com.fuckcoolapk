@@ -2,6 +2,12 @@
 
 Best present for 316 and 423.
 
+---
+
+**适用于新版本的 FuckCoolapk：[FuckCoolapk Again](https://github.com/Xposed-Modules-Repo/org.hello.coolapk)。**
+
+---
+
 此仓库目前同步[原 Repo](https://github.com/ejiaogl/FuckCoolapk)。
 
 更多信息参见[原 Repo README](https://github.com/ejiaogl/FuckCoolapk/blob/master/README.md)。
